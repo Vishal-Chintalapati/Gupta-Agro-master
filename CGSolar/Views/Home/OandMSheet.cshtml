@@ -1,0 +1,171 @@
+﻿@model List<CGSolar.Models.OperationAndMaintenanceModel>
+@{
+    ViewBag.Title = "O and M sheet";
+}
+    
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css" />
+    
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.js"></script>
+    
+<style>
+    #OMtable thead{
+        color: black;
+        border-collapse: collapse;
+        border: 1px solid black;
+    }
+
+    #OMtable tbody td{        
+        border-collapse:collapse;
+        border:1px solid black;
+
+    }
+    tbody td:hover{
+        background-color:coral;
+    }
+    /*.dataTables_scrollBody{
+        max-height:15px;
+        overflow-y:scroll;
+    }*/
+</style>
+
+    <div class="table table-responsive" style="margin-top:20px">
+        <table id="OMtable" style="">
+            <thead style="background-color:gold">                
+                <tr>
+                    <td>S.No.</td>
+                    <td>Wo#</td>
+                    <td>Beneficiary Name</td>
+                    <td>Village</td>
+                    <td>Block</td>
+                    <td>District</td>
+                    <td>System Capacity</td>
+                    <td>Contact Number</td>
+                    <td>Problem Report Date</td>
+                    <td>Problem Type</td>
+                    <td>Status</td>
+                    <td>Date Of Completion</td>
+                </tr>
+            </thead>
+            <tbody>
+                @{int count = 1;
+                foreach (var item in Model)
+                {                    
+                    <tr>
+                        <td>@count</td>
+                        <td>@item.WorkOrderNo</td>
+                        <td>@item.BeneficiaryName</td>
+                        <td>@item.Village</td>
+                        <td>@item.Block</td>
+                        <td>@item.District</td>
+                        <td>@item.SystemCapacity</td>
+                        <td>@item.Contact</td>
+                        <td>@item.ReportedDate</td>
+                        <td>@item.ProblemDescription</td>
+                        <td>@item.Status</td>
+                        <td>@item.CompletionDate</td>
+                    </tr>
+                    @*<tr>
+                            <td>2</td>
+                            <td>123456</td>
+                            <td>Vishal</td>
+                            <td>Vizag</td>
+                            <td>1</td>
+                            <td>Vizag</td>
+                            <td>3</td>
+                            <td>7799004545</td>
+                            <td>1/2/3</td>
+                            <td>Problem Type</td>
+                            <td>Status</td>
+                            <td>2/3/4</td>
+                        </tr>
+
+                        <tr>
+                            <td>3</td>
+                            <td>123456</td>
+                            <td>Praveen</td>
+                            <td>Hyderabad</td>
+                            <td>1</td>
+                            <td>Hyderabad</td>
+                            <td>3</td>
+                            <td>8949763754</td>
+                            <td>1/2/3</td>
+                            <td>Problem Type</td>
+                            <td>Status</td>
+                            <td>2/3/4</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>123456</td>
+                            <td>Praveen</td>
+                            <td>Hyderabad</td>
+                            <td>1</td>
+                            <td>Hyderabad</td>
+                            <td>3</td>
+                            <td>8949763754</td>
+                            <td>1/2/3</td>
+                            <td>Problem Type</td>
+                            <td>Status</td>
+                            <td>2/3/4</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>123456</td>
+                            <td>Praveen</td>
+                            <td>Hyderabad</td>
+                            <td>1</td>
+                            <td>Hyderabad</td>
+                            <td>3</td>
+                            <td>8949763754</td>
+                            <td>1/2/3</td>
+                            <td>Problem Type</td>
+                            <td>Status</td>
+                            <td>2/3/4</td>
+                        </tr>*@
+                        count++;
+                    }
+                }
+                @*<tr>
+                    <td>2</td>
+                    <td>123456</td>
+                    <td>Vishal</td>
+                    <td>Vizag</td>
+                    <td>1</td>
+                    <td>Vizag</td>
+                    <td>3</td>
+                    <td>7799004545</td>
+                    <td>1/2/3</td>
+                    <td>Problem Type</td>
+                    <td>Status</td>
+                    <td>2/3/4</td>
+                </tr>
+                    
+                <tr>
+                    <td>3</td>
+                    <td>123456</td>
+                    <td>Praveen</td>
+                    <td>Hyderabad</td>
+                    <td>1</td>
+                    <td>Hyderabad</td>
+                    <td>3</td>
+                    <td>8949763754</td>
+                    <td>1/2/3</td>
+                    <td>Problem Type</td>
+                    <td>Status</td>
+                    <td>2/3/4</td>
+                </tr>*@
+                    
+
+            </tbody>
+        </table>
+    </div>
+
+<script>
+    $('#OMtable').DataTable({
+        "scrollY": "300px",
+        "order": [],
+        "scrollCollapse":true
+    });
+</script>

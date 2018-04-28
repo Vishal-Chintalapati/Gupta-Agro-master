@@ -1,0 +1,89 @@
+﻿@model CGSolar.Models.BeneficiaryDetailsModel
+
+@{
+    ViewBag.Title = "BeneficiaryDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">*@
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css" />
+
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.js"></script>
+
+<style>
+    #beneficiaryTable thead {
+        color: black;
+        border-collapse: collapse;
+        border: 1px solid black;
+    }
+
+    #beneficiaryTable tbody td {
+        border-collapse: collapse;
+        border: 1px solid black;
+    }
+
+    tbody td:hover {
+        background-color: coral;
+    }
+</style>
+
+<h2>Beneficiary Details</h2>
+@using (Html.BeginForm())
+{
+    <div class="container" style="background-color:darkseagreen;border-radius:8px; height:100px">
+        <div class="form-group" style="padding-top:2%">
+            <label class="control-label col-sm-2"> Select Category: </label>
+            @Html.DropDownListFor(model => model.Category, new SelectList(ViewBag.category), "--Select Category--", new { @id = "category", @class = "form-control col-sm-4"})
+                        
+            <button type="submit" class="col-sm-1">Get</button>
+        </div>
+        
+    </div>
+if (IsPost)
+{
+    <div style="margin-top:2%">
+
+        <div class="table table-responsive">
+            <table id="beneficiaryTable" style="border: 1px solid black">
+                <thead style="background-color: burlywood;">
+                    <tr>
+                        <td><b>Beneficiary Name</b></td>
+                        <td><b>Father's Name</b></td>
+                        <td><b>Caste</b></td>
+                        <td><b>Village</b></td>
+                        <td><b>Block</b></td>
+                        <td><b>Contact Number</b></td>
+                        <td><b>System Capacity</b></td>
+                        <td><b>Pump Type</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var beneficiary in Model.BeneficiaryList)
+                {
+                        <tr>
+                            <td>@beneficiary.BeneficiaryName</td>
+                            <td>@beneficiary.FatherName</td>
+                            <td>@beneficiary.Caste</td>
+                            <td>@beneficiary.Village</td>
+                            <td>@beneficiary.Block</td>
+                            <td>@beneficiary.ContactNo</td>
+                            <td>@beneficiary.systemCapacity</td>
+                            <td>@beneficiary.PumpType</td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+}
+     
+}
+
+<script>
+    $('#beneficiaryTable').DataTable({
+        "scrollY": "400px"
+    });
+</script>
