@@ -2,14 +2,14 @@
 @{
     ViewBag.Title = "O and M sheet";
 }
-    
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css" />
-    
 <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.js"></script>
-    
+
+
+
+
 <style>
     #OMtable thead{
         color: black;
@@ -17,7 +17,7 @@
         border: 1px solid black;
     }
 
-    #OMtable tbody td{        
+    #OMtable tbody td{
         border-collapse:collapse;
         border:1px solid black;
 
@@ -25,147 +25,580 @@
     tbody td:hover{
         background-color:coral;
     }
+    .modal-dialog{
+        position:static !important;
+    }
     /*.dataTables_scrollBody{
         max-height:15px;
         overflow-y:scroll;
     }*/
 </style>
 
-    <div class="table table-responsive" style="margin-top:20px">
-        <table id="OMtable" style="">
-            <thead style="background-color:gold">                
-                <tr>
-                    <td>S.No.</td>
-                    <td>Wo#</td>
-                    <td>Beneficiary Name</td>
-                    <td>Village</td>
-                    <td>Block</td>
-                    <td>District</td>
-                    <td>System Capacity</td>
-                    <td>Contact Number</td>
-                    <td>Problem Report Date</td>
-                    <td>Problem Type</td>
-                    <td>Status</td>
-                    <td>Date Of Completion</td>
-                </tr>
-            </thead>
-            <tbody>
-                @{int count = 1;
-                foreach (var item in Model)
-                {                    
-                    <tr>
-                        <td>@count</td>
-                        <td>@item.WorkOrderNo</td>
-                        <td>@item.BeneficiaryName</td>
-                        <td>@item.Village</td>
-                        <td>@item.Block</td>
-                        <td>@item.District</td>
-                        <td>@item.SystemCapacity</td>
-                        <td>@item.Contact</td>
-                        <td>@item.ReportedDate</td>
-                        <td>@item.ProblemDescription</td>
-                        <td>@item.Status</td>
-                        <td>@item.CompletionDate</td>
-                    </tr>
-                    @*<tr>
-                            <td>2</td>
-                            <td>123456</td>
-                            <td>Vishal</td>
-                            <td>Vizag</td>
-                            <td>1</td>
-                            <td>Vizag</td>
-                            <td>3</td>
-                            <td>7799004545</td>
-                            <td>1/2/3</td>
-                            <td>Problem Type</td>
-                            <td>Status</td>
-                            <td>2/3/4</td>
-                        </tr>
-
-                        <tr>
-                            <td>3</td>
-                            <td>123456</td>
-                            <td>Praveen</td>
-                            <td>Hyderabad</td>
-                            <td>1</td>
-                            <td>Hyderabad</td>
-                            <td>3</td>
-                            <td>8949763754</td>
-                            <td>1/2/3</td>
-                            <td>Problem Type</td>
-                            <td>Status</td>
-                            <td>2/3/4</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>123456</td>
-                            <td>Praveen</td>
-                            <td>Hyderabad</td>
-                            <td>1</td>
-                            <td>Hyderabad</td>
-                            <td>3</td>
-                            <td>8949763754</td>
-                            <td>1/2/3</td>
-                            <td>Problem Type</td>
-                            <td>Status</td>
-                            <td>2/3/4</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>123456</td>
-                            <td>Praveen</td>
-                            <td>Hyderabad</td>
-                            <td>1</td>
-                            <td>Hyderabad</td>
-                            <td>3</td>
-                            <td>8949763754</td>
-                            <td>1/2/3</td>
-                            <td>Problem Type</td>
-                            <td>Status</td>
-                            <td>2/3/4</td>
-                        </tr>*@
-                        count++;
-                    }
-                }
-                @*<tr>
-                    <td>2</td>
-                    <td>123456</td>
-                    <td>Vishal</td>
-                    <td>Vizag</td>
-                    <td>1</td>
-                    <td>Vizag</td>
-                    <td>3</td>
-                    <td>7799004545</td>
-                    <td>1/2/3</td>
-                    <td>Problem Type</td>
-                    <td>Status</td>
-                    <td>2/3/4</td>
-                </tr>
-                    
-                <tr>
-                    <td>3</td>
-                    <td>123456</td>
-                    <td>Praveen</td>
-                    <td>Hyderabad</td>
-                    <td>1</td>
-                    <td>Hyderabad</td>
-                    <td>3</td>
-                    <td>8949763754</td>
-                    <td>1/2/3</td>
-                    <td>Problem Type</td>
-                    <td>Status</td>
-                    <td>2/3/4</td>
-                </tr>*@
-                    
-
-            </tbody>
-        </table>
+<div style="margin-top:80px"></div>
+<div class="modal-content">
+    <div class="modal-header" style="background-color:darkcyan">
+        <h4 class="modal-title">O and M List</h4>
     </div>
+    <div class="modal-body">
+        <div class="panel-body">
+            <div class="table table-responsive" style="margin-top:20px">
+                <table id="OMtable" style="border: 1px solid black">
+                    <thead style="background-color:burlywood">
+                        <tr>
+                            <td>S.No.</td>
+                            <td>Wo#</td>
+                            <td>Beneficiary Name</td>
+                            <td>Village</td>
+                            <td>Block</td>
+                            <td>District</td>
+                            <td>System Capacity</td>
+                            <td>Contact Number</td>
+                            <td>Assigned To</td>
+                            <td>Problem Report Date</td>
+                            <td>Problem Type</td>
+                            <td>Status</td>
+                            <td>Date Of Completion</td>
+                            @if (Session["role"].ToString() == "Admin" || Session["role"].ToString() == "Field Assitant")
+                            {
+                                <td></td>
+                            }
 
-<script>
-    $('#OMtable').DataTable({
-        "scrollY": "300px",
-        "order": [],
-        "scrollCollapse":true
-    });
-</script>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{int count = 1;
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@count</td>
+                                    <td>@item.WorkOrderNo</td>
+                                    <td>@item.BeneficiaryName</td>
+                                    <td>@item.Village</td>
+                                    <td>@item.Block</td>
+                                    <td>@item.District</td>
+                                    <td>@item.SystemCapacity</td>
+                                    <td>@item.Contact</td>
+                                    <td>@item.AssignedEmployee</td>
+                                    <td>@item.ReportedDate</td>
+                                    <td>@item.ProblemDescription</td>
+                                    <td>@item.Status</td>
+                                    <td>@item.CompletionDate</td>
+                                    @if (Session["role"].ToString() == "Admin")
+                                    {
+                                        <td><a href="#" data-target="#myModal_@count" data-toggle="modal">Edit</a></td>
+                                    }
+                                    else if (Session["role"].ToString() == "Field Assitant")
+                                    {
+                                        <td><a href="#" data-target="#faModal_@count" data-toggle="modal">Field Form</a></td>
+                                    }
+                                </tr>
+                                @*<tr>
+                                        <td>2</td>
+                                        <td>123456</td>
+                                        <td>Vishal</td>
+                                        <td>Vizag</td>
+                                        <td>1</td>
+                                        <td>Vizag</td>
+                                        <td>3</td>
+                                        <td>7799004545</td>
+                                        <td>1/2/3</td>
+                                        <td>Problem Type</td>
+                                        <td>Status</td>
+                                        <td>2/3/4</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>3</td>
+                                        <td>123456</td>
+                                        <td>Praveen</td>
+                                        <td>Hyderabad</td>
+                                        <td>1</td>
+                                        <td>Hyderabad</td>
+                                        <td>3</td>
+                                        <td>8949763754</td>
+                                        <td>1/2/3</td>
+                                        <td>Problem Type</td>
+                                        <td>Status</td>
+                                        <td>2/3/4</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>123456</td>
+                                        <td>Praveen</td>
+                                        <td>Hyderabad</td>
+                                        <td>1</td>
+                                        <td>Hyderabad</td>
+                                        <td>3</td>
+                                        <td>8949763754</td>
+                                        <td>1/2/3</td>
+                                        <td>Problem Type</td>
+                                        <td>Status</td>
+                                        <td>2/3/4</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>123456</td>
+                                        <td>Praveen</td>
+                                        <td>Hyderabad</td>
+                                        <td>1</td>
+                                        <td>Hyderabad</td>
+                                        <td>3</td>
+                                        <td>8949763754</td>
+                                        <td>1/2/3</td>
+                                        <td>Problem Type</td>
+                                        <td>Status</td>
+                                        <td>2/3/4</td>
+                                    </tr>*@
+                            count++;
+                        }
+                        }
+                        @*<tr>
+                                <td>2</td>
+                                <td>123456</td>
+                                <td>Vishal</td>
+                                <td>Vizag</td>
+                                <td>1</td>
+                                <td>Vizag</td>
+                                <td>3</td>
+                                <td>7799004545</td>
+                                <td>1/2/3</td>
+                                <td>Problem Type</td>
+                                <td>Status</td>
+                                <td>2/3/4</td>
+                            </tr>
+
+                            <tr>
+                                <td>3</td>
+                                <td>123456</td>
+                                <td>Praveen</td>
+                                <td>Hyderabad</td>
+                                <td>1</td>
+                                <td>Hyderabad</td>
+                                <td>3</td>
+                                <td>8949763754</td>
+                                <td>1/2/3</td>
+                                <td>Problem Type</td>
+                                <td>Status</td>
+                                <td>2/3/4</td>
+                            </tr>*@
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+            @{int modalCount = 0;}
+            @foreach (var item in Model)
+            {
+                modalCount++;
+                <div id="myModal_@modalCount" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Edit Details</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="panel-body">
+                                    <form class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2">Work Order: </label>
+                                            <div class="col-sm-4">
+                                                <input id="workOrder_@modalCount" name="WorkOrder" class="form-control" type="text" value="@item.WorkOrderNo" placeholder="Please Enter Work Order No." />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2">System Capacity: </label>
+                                            <div class="col-sm-4">
+                                                <input id="systemCapacity_@modalCount" name="SystemCapacity" class="form-control" type="text" value="@item.SystemCapacity" placeholder="Please Enter System Capacity" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2">Beneficiary Name: </label>
+                                            <div class="col-sm-4">
+                                                <input id="beneficiaryName_@modalCount" class="form-control" type="text" value="@item.BeneficiaryName" placeholder="Please Enter Beneficiary Name" />
+                                                <input id="beneficiaryID_@modalCount" name="benID" type="hidden" value="@item.BeneficiaryID" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2">Contact Number: </label>
+                                            <div class="col-sm-4">
+                                                <input id="contactNumber_@modalCount" name="Contact" class="form-control" type="text" value="@item.Contact" placeholder="Please Enter Contact Number" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2">Village: </label>
+                                            <div class="col-sm-4">
+                                                <input id="village_@modalCount" name="Village" class="form-control" type="text" value="@item.Village" placeholder="Please Enter Village Name" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2">Block: </label>
+                                            <div class="col-sm-4">
+                                                <input id="block_@modalCount" name="Block" class="form-control" type="text" value="@item.Block" placeholder="Please Enter Block No." />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2">District: </label>
+                                            <div class="col-sm-4">
+                                                <input id="district_@modalCount" name="District" class="form-control" type="text" value="@item.District" placeholder="Please Enter District" />
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2">Field Assistant: </label>
+                                            <div class="col-sm-4">
+                                                <select id="assignedTo_@modalCount" name="AssignedTo" class="form-control">
+                                                    <option value="0">--Select Field Assistant--</option>
+                                                    @foreach (var emp in (ViewBag.EmployeeList as List<tbl_employee>))
+                                                    {
+                                                        if (emp.EmployeeID == item.AssignedTo)
+                                                        {
+                                                            <option selected value="@emp.EmployeeID">@emp.EmployeeName</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@emp.EmployeeID">@emp.EmployeeName</option>
+                                                        }
+                                                        @*<option>User 2</option>
+                                                            <option>User 3</option>
+                                                            <option>User 4</option>
+                                                            <option>User 5</option>*@
+                                                    }
+
+                                                </select>
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2">Problem Reported Date: </label>
+                                            <div class="col-sm-4">
+                                                <input id="reportDate_@modalCount" name="ReportedDate" class="form-control" type="date" value="@item.ReportedDate" placeholder="Please Select Date" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2">Problem Description: </label>
+                                            <div class="col-sm-4">
+                                                <textarea id="problemDesc_@modalCount" class="form-control" name="ProblemDescription" placeholder="Please Enter Problem Description">@item.ProblemDescription</textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2">Completion Date: </label>
+                                            <div class="col-sm-4">
+                                                <input id="completionDate_@modalCount" name="completionDate" class="form-control" type="date" value="@item.CompletionDate" placeholder="Please Select Date" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2">Status: </label>
+                                            <div class="col-sm-4">
+                                                <select id="status_@modalCount" name="status" class="form-control">
+                                                    <option value="0">--Select Status--</option>
+                                                    @foreach (var status in (ViewBag.Status))
+                                                    {
+                                                        if (status == item.Status)
+                                                        {
+                                                            <option selected>@item.Status</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option>@item.Status</option>
+                                                        }
+                                                        @*<option>User 2</option>
+                                                            <option>User 3</option>
+                                                            <option>User 4</option>
+                                                            <option>User 5</option>*@
+                                                    }
+
+                                                </select>
+                                                @*<input id="status_@modalCount" name="Status" class="form-control" type="text" value="@item.Status" placeholder="Please Enter Pump Type" />*@
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-3"></div>
+                                            <div class="col-sm-2">
+                                                <button class="form-control btn-success" type="button" onclick="editOandM(@modalCount)">
+                                                    Save
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="faModal_@modalCount" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Field Form</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="panel-body">
+                                    <form class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-4" style="text-align:left">Actual Problem: </label>
+                                            <div class="col-sm-8">
+                                                <input id="actualProblem_@modalCount" name="actualProblem" class="form-control" type="text" placeholder="Please Enter Work Problem Description" />
+                                                <input type="hidden" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-4" style="text-align:left">Spare Item: </label>
+                                            <div class="col-sm-8">
+                                                <select id="spareItem_@modalCount" name="spareItem" class="form-control" onchange="DisplayRemQty(@modalCount)">
+                                                    <option value="0">--Please Select Item--</option>
+                                                    @foreach (var stock in (ViewBag.ItemList as List<tbl_Items>))
+                                                    {
+                                                        <option value="@stock.itemcode">@stock.itemname</option>
+                                                    }
+                                                </select>
+                                                @*<input id="spareItem_@modalCount" name="spareItem" class="form-control" type="text" placeholder="Please Enter System Capacity" />*@
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-4" style="text-align:left">Quantity Used: </label>
+                                            <div class="col-sm-8">
+                                                <input id="reqQuantity_@modalCount" class="form-control" type="text" placeholder="Please Enter required Quantity" />
+                                                <div id="remQtyDiv_@modalCount" style="display:none">Remaining Quantity : <p id="remQty_@modalCount"></p></div>
+                                                @*<input id="beneficiaryID_@modalCount" name="benID" type="hidden" value="@item.BeneficiaryID" />*@
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-4" style="text-align:left">Inhand/Required: </label>
+                                            <div class="col-sm-3">
+                                                Inhand: <input id="inhand_@modalCount" name="qtyType_@modalCount" class="form-control-sm" type="radio" value="inhand" />
+                                            </div>
+                                            <div class="col-sm-3">
+                                                Required: <input id="required_@modalCount" name="qtyType_@modalCount" class="form-control-sm" type="radio" value="required" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-4" style="text-align:left">Pump Type: </label>
+                                            <div class="col-sm-8">
+                                                <select id="pumpType_@modalCount" name="pumpType" class="form-control">
+                                                    <option>--Please Select Pump Type--</option>
+                                                    @foreach (var stock in (ViewBag.PumpTypeList))
+                                                    {
+                                                        <option>@stock</option>
+                                                    }
+                                                </select>
+                                                @*<input id="village_@modalCount" name="Village" class="form-control" type="text" value="@item.Village" placeholder="Please Enter Village Name" />*@
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="control-label col-sm-5"></div>
+                                            <div class="col-sm-5">
+                                                <button class="form-control btn-success" type="button" onclick="SubmitFieldForm(@modalCount)">
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        </div>
+                                        @*<div class="form-group">
+                                                <label class="control-label col-sm-2">Block: </label>
+                                                <div class="col-sm-4">
+                                                    <input id="block_@modalCount" name="Block" class="form-control" type="text" value="@item.Block" placeholder="Please Enter Block No." />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-2">District: </label>
+                                                <div class="col-sm-4">
+                                                    <input id="district_@modalCount" name="District" class="form-control" type="text" value="@item.District" placeholder="Please Enter District" />
+                                                </div>
+                                            </div>
+
+
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-2">Field Assistant: </label>
+                                                <div class="col-sm-4">
+                                                    <select id="assignedTo_@modalCount" name="AssignedTo" class="form-control">
+                                                        <option value="0">--Select Field Assistant--</option>
+                                                        @foreach (var emp in (ViewBag.EmployeeList as List<tbl_employee>))
+                                                        {
+                                                            if (emp.EmployeeID == item.AssignedTo)
+                                                            {
+                                                                <option selected value="@emp.EmployeeID">@emp.EmployeeName</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@emp.EmployeeID">@emp.EmployeeName</option>
+                                                            }
+
+                                                        }
+
+                                                    </select>
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-2">Problem Reported Date: </label>
+                                                <div class="col-sm-4">
+                                                    <input id="reportDate_@modalCount" name="ReportedDate" class="form-control" type="date" value="@item.ReportedDate" placeholder="Please Select Date" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-2">Problem Description: </label>
+                                                <div class="col-sm-4">
+                                                    <textarea id="problemDesc_@modalCount" class="form-control" name="ProblemDescription" placeholder="Please Enter Problem Description">@item.ProblemDescription</textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-2">Completion Date: </label>
+                                                <div class="col-sm-4">
+                                                    <input id="completionDate_@modalCount" name="completionDate" class="form-control" type="date" value="@item.CompletionDate" placeholder="Please Select Date" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-2">Status: </label>
+                                                <div class="col-sm-4">
+                                                    <input id="status_@modalCount" name="Status" class="form-control" type="text" value="@item.Status" placeholder="Please Enter Pump Type" />
+                                                </div>
+                                            </div>*@
+
+
+                                    </form>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+            <script>
+
+                $(document).ready(
+                    function () {
+                        //$('input[name = "ReportedDate"]').datepicker();
+                        //$('input[name = "completionDate"]').datepicker();
+
+                    }
+
+                );
+
+                $('#OMtable').Datatable({
+                    "scrollY": "300px",
+                    "order": [],
+                    //"scrollX": true
+                });
+
+                function editOandM(i) {
+
+                    //$('#reportDate_'+i).datepicker();
+                    //$('#completionDate_'+i).datepicker();
+
+                    var beneficiaryID = $('#beneficiaryID_' + i).val();
+                    var beneficiaryName = $('#beneficiaryName_' + i).val();
+                    var workOrder = $('#workOrder_' + i).val();
+                    var sysCapacity = $('#systemCapacity_' + i).val();
+                    var contactNo = $('#contactNumber_' + i).val();
+                    var village = $('#village_' + i).val();
+                    var block = $('#block_' + i).val();
+                    var district = $('#district_' + i).val();
+                    var reportDate = $('#reportDate_' + i).val();
+                    var completionDate = $('#completionDate_' + i).val();
+                    var problemDesc = $('#problemDesc_' + i).val();
+                    var status = $('#status_' + i).val();
+                    var assignedTo = $('#assignedTo_' + i).val();
+                    $.ajax({
+                        url: "@Url.Action("EditOandM","Home")",
+                        dataType: "json",
+                        type: "POST",
+                        data: {
+                            benID: beneficiaryID, benName: beneficiaryName, workOrder: workOrder, sysCapacity: sysCapacity, contact: contactNo, village: village, block: block, district: district, reportDate: reportDate, completionDate: completionDate, problemDesc: problemDesc, status: status, assignedTo: assignedTo
+                        },
+                        success: function (data) {
+                            debugger;
+                            alert('Data updated Successfully');
+                            location.reload(true);
+                        }
+
+                    });
+                }
+
+
+                function SubmitFieldForm(c) {
+                    var problemDesc = $('#actualProblem_' + c).val();
+                    var itemCode = $('#spareItem_' + c).val();
+                    var qty = $('#reqQuantity_' + c).val();
+                    var qtyType = $('input:radio[name=qtyType_' + c + ']:checked').val()
+                    var pumpType = $('#pumpType_' + c).val();
+                    var workOrder = $('#workOrder_' + c).val();
+
+                    $.ajax({
+                        url: "@Url.Action("FieldForm","Home")",
+                        dataType: "json",
+                        type: "POST",
+                        data: {
+                            problemDesc: problemDesc, itemCode: itemCode, qty: qty, qtyType: qtyType, pumpType: pumpType, workOrder: workOrder
+                        },
+                        success: function (data) {
+                            debugger;
+                            if (data == "") {
+                                alert('Data updated Successfully');
+                                location.reload(true);
+                            }
+                            else if (data == "qty") {
+                                alert('Entered quantity is greater than remaining quantity. Please select Inhand status as Required to request for stock!!');
+                            }
+                        },
+                        error(response) {
+                            alert(response.responseText);
+                        }
+
+                    });
+                }
+
+                function DisplayRemQty(m) {
+                    var itemCode = $('#spareItem_' + m).val();
+                    $.ajax({
+                        url: "@Url.Action("FetchRemQty","Home")",
+                        dataType: "json",
+                        type: "POST",
+                        data: {
+                            itemCode: itemCode
+                        },
+                        success: function (data) {
+                            debugger;
+                            if (parseInt(data) != -1) {
+                                $('#remQty_' + m).html(data);
+                                $('#remQtyDiv_' + m).show();
+                            }
+                            else {
+                                $('#remQtyDiv_' + m).hide();
+                            }
+                        }
+
+                    });
+                }
+            </script>

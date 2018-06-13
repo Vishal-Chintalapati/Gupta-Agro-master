@@ -9,12 +9,14 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using CGSolar.Models;
+using System.Web.Security;
 
 namespace CGSolar.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
+        GuptaAgroDbContext db = new GuptaAgroDbContext();
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
@@ -58,6 +60,11 @@ namespace CGSolar.Controllers
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
+            using (GuptaAgroDbContext db = new GuptaAgroDbContext())
+            {
+                ViewBag.Roles = db.tbl_roles.Select(r => r).ToList();
+            }
+            
             return View();
         }
 
@@ -66,29 +73,98 @@ namespace CGSolar.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> Login(LoginModel model, string returnUrl)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return View(model);
-            }
-
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-            switch (result)
-            {
-                case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
+                if (!ModelState.IsValid)
+                {
+                    using (GuptaAgroDbContext db = new GuptaAgroDbContext())
+                    {
+                        ViewBag.Roles = db.tbl_roles.Select(r => r).ToList();
+                    }
                     return View(model);
+                }
+                using (GuptaAgroDbContext db = new GuptaAgroDbContext())
+                {
+                    var user = db.tbl_employee.Where(e => (e.userid == model.UserName && e.password == model.Password) || (e.ContactNo == model.UserName && e.password == model.Password)).Select(e => e).FirstOrDefault();
+
+                    if (user != null)
+                    {
+                        FormsAuthentication.SetAuthCookie(model.UserName, false);
+
+                        var authTicket = new FormsAuthenticationTicket(1, user.EmployeeName, DateTime.Now, DateTime.Now.AddMinutes(30), false, user.Role);
+                        string encryptedTicket = FormsAuthentication.Encrypt(authTicket);
+                        var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, encryptedTicket);
+                        HttpContext.Response.Cookies.Add(authCookie);
+                        Session["role"] = user.Role;
+                        Session["ID"] = user.EmployeeID;
+                        Session.Timeout = 30;
+                        if (user.Role == "Admin")
+                        {
+                            return RedirectToAction("BeneficiaryDetails", "Home");
+                        }
+                        else if (user.Role == "Field Assitant")
+                        {
+                            return RedirectToAction("OandMSheet", "Home");
+                        }
+                        else if (user.Role == "Manager")
+                        {
+                            return RedirectToAction("ComplaintForm", "Home");
+                        }
+                        else if (user.Role == "Inventory Admin")
+                        {
+                            return RedirectToAction("StockDistribution", "Home");
+                        }
+                        else
+                        {
+                            throw new Exception();
+                        }
+                    }
+
+                    else
+                    {
+
+                        ViewBag.Roles = db.tbl_roles.Select(r => r).ToList();
+                        
+                        ModelState.AddModelError("", "Invalid login attempt.");
+                        return View(model);
+                    }
+                }
+            
             }
+            catch(Exception ex)
+            {
+                return View("Error");
+            }   
+            //// This doesn't count login failures towards account lockout
+            //// To enable password failures to trigger account lockout, change to shouldLockout: true
+            //var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            //switch (result)
+            //{
+            //    case SignInStatus.Success:
+            //        return RedirectToLocal(returnUrl);
+            //    case SignInStatus.LockedOut:
+            //        return View("Lockout");
+            //    case SignInStatus.RequiresVerification:
+            //        return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+            //    case SignInStatus.Failure:
+            //    default:
+            //        ModelState.AddModelError("", "Invalid login attempt.");
+            //        return View(model);
+            //}
+        }
+
+
+        // POST: /Account/LogOff
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LogOff()
+        {
+            //AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            FormsAuthentication.SignOut();
+            Session.Abandon();
+            return RedirectToAction("Index", "Home");
         }
 
         //
@@ -134,43 +210,72 @@ namespace CGSolar.Controllers
             }
         }
 
+
+        //[HttpPost]
+        //public ActionResult Register(FormCollection form)
+        //{
+        //    ViewBag.Roles = db.tbl_roles.Select(r => r).ToList();
+        //    string empName = form["empName"].ToString();
+        //    string contact = form["contact"].ToString();
+        //    string pwd = form["password"].ToString();
+        //    int role = Convert.ToInt32(form["role"]);
+        //    var roleDesc = db.tbl_roles.Where(r => r.roleid == role).Select(r => r.role).FirstOrDefault();
+        //    var uid = db.usp_generateUserID(empName, contact, roleDesc);
+
+        //    var userid = uid.First();
+        //    db.usp_RegisterUser(empName, userid, roleDesc, contact, pwd, DateTime.Now, Environment.UserName);
+        //    var empList = db.tbl_employee.Select(e => e).ToList();
+        //    return View("OandMSheet");
+        //}
+        //[HttpPost]
+        //public JsonResult UserCheck(string empName, string contact, int role)
+        //{
+        //    var roleDesc = db.tbl_roles.Where(r => r.roleid == role).Select(r => r.role).FirstOrDefault();
+        //    var uid = db.usp_generateUserID(empName, contact, roleDesc);
+
+        //    var userid = uid.First();
+        //    return Json(userid, JsonRequestBehavior.AllowGet);
+        //}
+
+
+
         //
         // GET: /Account/Register
-        [AllowAnonymous]
-        public ActionResult Register()
-        {
-            return View();
-        }
+        //[AllowAnonymous]
+        //public ActionResult Register()
+        //{
+        //    return View();
+        //}
 
-        //
-        // POST: /Account/Register
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
-                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+        ////
+        //// POST: /Account/Register
+        //[HttpPost]
+        //[AllowAnonymous]
+        //[ValidateAntiForgeryToken]
+        //public async Task<ActionResult> Register(RegisterViewModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+        //        var result = await UserManager.CreateAsync(user, model.Password);
+        //        if (result.Succeeded)
+        //        {
+        //            await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
 
-                    return RedirectToAction("Index", "Home");
-                }
-                AddErrors(result);
-            }
+        //            // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
+        //            // Send an email with this link
+        //            // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+        //            // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+        //            // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
-        }
+        //            return RedirectToAction("Index", "Home");
+        //        }
+        //        AddErrors(result);
+        //    }
+
+        //    // If we got this far, something failed, redisplay form
+        //    return View(model);
+        //}
 
         //
         // GET: /Account/ConfirmEmail
@@ -386,14 +491,7 @@ namespace CGSolar.Controllers
         }
 
         //
-        // POST: /Account/LogOff
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult LogOff()
-        {
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
-        }
+
 
         //
         // GET: /Account/ExternalLoginFailure

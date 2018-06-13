@@ -1,0 +1,143 @@
+﻿@model List<tbl_StockRequest>
+@{
+    ViewBag.Title = "StockDistribution";
+}
+
+<h2>StockDistribution</h2>
+
+<h4>My Requests</h4>
+
+<div class="table table-responsive">
+    <table id="beneficiaryTable" style="border: 1px solid black">
+        <thead style="background-color: burlywood;">
+            <tr>
+                <td><b>Employee Name</b></td>
+                <td><b>Item Name</b></td>                
+                <td><b>Status</b></td>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count > 0)
+            {
+                foreach (var request in Model)
+                {
+                    <tr>
+                        <td>@request.EmployeeName</td>
+                        <td>@request.ItemName</td>
+                        <td>@request.Status</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td></td>
+                    <td>No Data Available</td>
+                    <td></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="col-md-5"></div>
+<div class="col-md-4">
+    <button data-target="#myModal" data-toggle="modal">Distribute</button>
+</div>
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Distribute Stock</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel-body">
+                    <form class="form-horizontal">
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">Field Assistant: </label>
+                            <div class="col-sm-8">
+                                <select id="employee" name="employee" class="form-control">
+                                    <option value="0">--Select Field Assistant--</option>
+                                    @foreach (var emp in (ViewBag.EmployeeList as List<tbl_employee>))
+                                    {
+                                        <option value="@emp.EmployeeID">@emp.EmployeeName</option>
+                                    }
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">Item Name: </label>
+                            <div class="col-sm-8">
+                                <select id="item" name="item" class="form-control">
+                                    <option value="0">--Select Item--</option>
+                                    @foreach (var emp in (ViewBag.ItemList as List<tbl_Items>))
+                                    {
+                                        <option value="@emp.itemcode">@emp.itemname</option>
+                                    }
+
+                                </select>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">Quantity to allocate: </label>
+                            <div class="col-sm-8">
+                                <input id="quantity" name="quantity" class="form-control" type="number" placeholder="Please Enter Quantity" />
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-5">
+                                <button class="form-control btn-success" type="button" onclick="DistributeStock()">
+                                    Distribute
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+    </div>
+
+    <script>
+        function DistributeStock(c) {
+            var employeeCode = $('#employee').val();
+            var itemCode = $('#item').val();
+            var qty = $('#quantity').val();
+
+            $.ajax({
+                url: "@Url.Action("DistributeStock","Home")",
+                dataType: "json",
+                type: "POST",
+                data: {
+                    employeeCode: employeeCode, itemCode: itemCode, qty: qty
+                },
+                success: function (data) {
+                    debugger;
+                    alert('Data updated Successfully');
+                    location.reload(true);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+
+            });
+        }
+    </script>
+

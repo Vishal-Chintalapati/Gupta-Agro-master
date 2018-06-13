@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewBag.Title = "UploadBeneficiary";
+}
+
+<h2>UploadBeneficiary</h2>
+
+@using (Html.BeginForm("UploadBeneficiary", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+
+    <table>
+        <tr>
+            <td>File:</td>
+            <td>
+                <input type="file" name="file" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" name="Submit" value="Upload" />
+            </td>
+            <td colspan="2">
+                <input type="submit" name="Submit" value="Download" formmethod="post" formaction="ExportToExcelReports"/>
+            </td>
+        </tr>
+    </table>
+} 

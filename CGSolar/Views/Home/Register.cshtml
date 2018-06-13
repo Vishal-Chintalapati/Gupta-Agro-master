@@ -1,0 +1,306 @@
+﻿@model List<CGSolar.tbl_employee>
+@{
+    ViewBag.Title = "Register";
+}
+
+<link href="~/Scripts/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" />
+
+<link href="~/Scripts/jquery-ui-1.12.1.custom/jquery-ui.theme.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-ui-1.12.1.custom/external/jquery/jquery.js"></script>
+<script src="~/Scripts/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+<style>
+    body{
+        background-image: url('../../images/product-panel.jpg');
+    }
+    #regBackground {
+
+        
+        /*filter: blur(3px);
+  -webkit-filter: blur(3px);*/
+    }
+    #pswd_info {
+        position: absolute;
+        bottom: -95px;
+        bottom: -115px\9; /* IE Specific */
+        right: 55px;
+        width: 250px;
+        padding: 15px;
+        background: #fefefe;
+        font-size: .875em;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px #ccc;
+        border: 1px solid #ddd;
+    }
+
+        #pswd_info h4 {
+            margin: 0 0 10px 0;
+            padding: 0;
+            font-weight: normal;
+        }
+
+        #pswd_info::before {
+            content: "\25B2";
+            position: absolute;
+            top: -12px;
+            left: 45%;
+            font-size: 14px;
+            line-height: 14px;
+            color: #ddd;
+            text-shadow: none;
+            display: block;
+        }
+
+    /* Add a green text color and a checkmark when the requirements are right */
+    .valid {
+        color: green;
+    }
+
+        .valid:before {
+            position: relative;
+            left: -35px;
+            content: "✔";
+        }
+
+    /* Add a red text color and an "x" when the requirements are wrong */
+    .invalid {
+        color: red;
+    }
+
+        .invalid:before {
+            position: relative;
+            left: -35px;
+            content: "✖";
+        }
+
+    #pswd_info,.close {
+        display: none;
+    }
+    .modal-content{
+        background-color:transparent;          
+        width:100%;
+    }
+    .modal-title,label{
+        color:white
+    }
+    label{
+        color:black;
+    }
+    .modal-content{        
+        background-color: rgba(255,255,255,0.5);
+        color: #222;
+        -webkit-filter: blur(0px);
+        display: block;
+    }
+</style>
+<div id="regBackground" class="container">
+    <div class="content">
+
+    </div>
+    @using (Html.BeginForm("Register", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.ValidationSummary("", new { @class = "text-danger" })
+
+        @*<div class="panel panel-default z-depth-3" style="background-color:teal;">
+            <div class="panel-heading" style="background-color:transparent">
+                <h2 style="color:white"><b>Complaint Form</b></h2>
+            </div>
+            <div class="panel-body">*@
+        <div class="modal-dialog modal-sm">
+
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:dodgerblue">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="text-align:center;"><b>Register</b></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Employee Name: </label>
+                        <div class="col-md-8">
+                            <input id="empName" name="empName" type="text" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Role: </label>
+                        <div class="col-md-8">
+                            <select id="role" name="role" class="form-control" required>
+                                <option value="0">--Please Select Role--</option>
+                                @foreach (var role in (ViewBag.Roles as List<tbl_roles>))
+                                {
+                                    <option value="@role.roleid">@role.role</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Contact No: </label>
+                        <div class="col-md-8">
+                            <input id="contact" name="contact" class="form-control" type="tel" maxlength="10" minlength="10" required onchange="UserCheck()" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label class="col-md-4 control-label"></label>
+                        <div class="col-md-8">
+                            <p id="status"></p>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Password: </label>
+                        <div class="col-md-8">
+                            <input name="password" class="form-control" type="password" id="pswd" required/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-6 col-md-10">
+                            <input type="submit" class="btn btn-success" value="Register" onsubmit="validatePWD()"/>
+                        </div>
+                    </div>
+
+
+                    <div id="pswd_info">
+                        <h4>Password must meet the following requirements:</h4>
+                        <ul>
+                            <li id="letter" class="invalid">At least <strong>one letter</strong></li>
+                            <li id="capital" class="invalid">At least <strong>one capital letter</strong></li>
+                            <li id="number" class="invalid">At least <strong>one number</strong></li>
+                            <li id="space" class="invalid">Should contain <strong>no Spaces</strong></li>
+                            <li id="length" class="invalid">Be at least <strong>8 characters</strong></li>
+                        </ul>
+                    </div>
+                    @*</div>
+                        </div>*@
+
+                </div>
+            </div>
+        </div>
+
+    }
+    @if (IsPost)
+            {
+        <div style="margin-top:2%">
+            <div class="table table-responsive">
+                <table id="beneficiaryTable" style="border: 1px solid black">
+                    <thead style="background-color: burlywood;">
+                        <tr>
+                            <td><b>EmployeeID</b></td>
+                            <td><b>Role</b></td>
+                            <td><b>EmployeeName</b></td>
+                            <td><b>ContactNo</b></td>
+                            <td><b>User ID</b></td>
+                            <td><b>Password</b></td>
+
+                        </tr>
+                    </thead>
+                    <tbody style="background-color:white">
+                        @foreach (var employee in Model)
+                        {
+                            <tr>
+                                <td>@employee.EmployeeID</td>
+                                <td>@employee.Role</td>
+                                <td>@employee.EmployeeName</td>
+                                <td>@employee.ContactNo</td>
+                                <td>@employee.userid</td>
+                                <td>@employee.password</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>
+
+
+            <script>
+                $(document).ready(function () {
+
+                    $('input[type=password]').keyup(function () {
+                        var pswd = $(this).val();
+                        //validate the length
+                        if (pswd.length < 8) {
+                            $('#length').removeClass('valid').addClass('invalid');
+                        } else {
+                            $('#length').removeClass('invalid').addClass('valid');
+                        }
+                        //validate letter
+                        if (pswd.match(/[A-z]/)) {
+                            $('#letter').removeClass('invalid').addClass('valid');
+                        } else {
+                            $('#letter').removeClass('valid').addClass('invalid');
+                        }
+
+                        //validate capital letter
+                        if (pswd.match(/[A-Z]/)) {
+                            $('#capital').removeClass('invalid').addClass('valid');
+                        } else {
+                            $('#capital').removeClass('valid').addClass('invalid');
+                        }
+
+                        //validate number
+                        if (pswd.match(/\d/)) {
+                            $('#number').removeClass('invalid').addClass('valid');
+                        } else {
+                            $('#number').removeClass('valid').addClass('invalid');
+                        }
+
+                        if(pswd.match(/\s/)){
+                            $('#space').removeClass('valid').addClass('invalid');
+                        } else {
+                            $('#space').removeClass('invalid').addClass('valid');
+                        }
+                    }).focus(function () {
+                        $('#pswd_info').show();
+                    }).blur(function () {
+                        $('#pswd_info').hide();
+                    });
+                });
+
+                function UserCheck() {
+                    $('#status').html('Checking...');
+                    debugger;
+                    $.ajax({
+                        url: "@Url.Action("UserCheck","Home")",
+                        dataType: "json",
+                        type: "POST",
+                        data: {
+                            empName: $('#empName').val(),
+                            contact: $('#contact').val(),
+                            role: $('#role').val()
+                        },
+                        success: function (data) {
+                            debugger;
+                            if (data == "0") {
+                                debugger;
+
+                                $('#status').html('<font color="Red">User already exists</font>')
+                                $('#empName').css("border-color", "red")
+                                $('#contact').css("border-color", "red")
+                            }
+                            else {
+                                debugger;
+                                console.log(data);
+                                $('#status').html('<font color="darkgreen"><b>The User Id is ' + data + '</b></font>')
+                                $('#empName').css("border-color", "darkgreen")
+                                $('#contact').css("border-color", "darkgreen")
+                            }
+                        }
+
+                    });
+                }
+
+                function validatePWD() {
+                    var pwd = $('#password').val();
+                    var regex = new RegExp()
+                    //if(pwd.length < 8 || !pwd.match() || pwd.match(/[A-Z]/) || )
+                }
+            </script>
+            @*@section Scripts {
+                    @Scripts.Render("~/bundles/jqueryval")
+                }*@

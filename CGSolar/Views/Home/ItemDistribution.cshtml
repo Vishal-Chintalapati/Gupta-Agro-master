@@ -1,0 +1,106 @@
+﻿
+@{
+    ViewBag.Title = "ItemDistribution";
+}
+
+<h2>ItemDistribution</h2>
+
+<div class="panel panel-default z-depth-3" style="background-color:teal;">
+    <div class="panel-heading" style="background-color:transparent">
+        <h2 style="color:white"><b>Complaint Form</b></h2>
+    </div>
+    <div class="panel-body">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="control-label col-sm-2" style="color:white">Work Order: </label>
+                <div class="col-sm-4">
+                    <input id="workOrder" name="WorkOrder" class="form-control" type="text" placeholder="Please Enter Work Order No." />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" style="color:white">System Capacity: </label>
+                <div class="col-sm-4">
+                    <input id="systemCapacity" name="SystemCapacity" class="form-control" type="text" placeholder="Please Enter System Capacity" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" style="color:white">Beneficiary Name: </label>
+                <div class="col-sm-4">
+                    <input id="beneficiaryName" class="form-control" type="text" placeholder="Please Enter Beneficiary Name" />
+                    <input id="beneficiaryID" name="benID" type="hidden" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" style="color:white">Contact Number: </label>
+                <div class="col-sm-4">
+                    <input id="contactNumber" name="Contact" class="form-control" type="text" placeholder="Please Enter Contact Number" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" style="color:white">Village: </label>
+                <div class="col-sm-4">
+                    <input id="village" name="Village" class="form-control" type="text" placeholder="Please Enter Village Name" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" style="color:white">Block: </label>
+                <div class="col-sm-4">
+                    <input id="block" name="Block" class="form-control" type="text" placeholder="Please Enter Block No." />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" style="color:white">District: </label>
+                <div class="col-sm-4">
+                    <input id="district" name="District" class="form-control" type="text" placeholder="Please Enter District" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" style="color:white">Problem Reported Date: </label>
+                <div class="col-sm-4">
+                    <input id="reportDate" name="ReportedDate" class="form-control" type="text" placeholder="Please Select Date" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2" style="color:white">Pump Type: </label>
+                <div class="col-sm-4">
+                    <input id="pumpType" name="PumpType" class="form-control" type="text" placeholder="Please Enter Pump Type" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2" style="color:white">Problem Description: </label>
+                <div class="col-sm-4">
+                    <textarea class="form-control" name="ProblemDescription" placeholder="Please Enter Problem Description"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" style="color:white">Field Assistant: </label>
+                <div class="col-sm-4">
+                    <select name="AssignedTo" class="form-control">
+                        <option value="0">--Select Field Assistant--</option>
+                        @foreach (var item in (ViewBag.EmployeeList as List<tbl_employee>))
+                        {
+                            <option value="@item.EmployeeID">@item.EmployeeName</option>
+                                @*<option>User 2</option>
+                                    <option>User 3</option>
+                                    <option>User 4</option>
+                                    <option>User 5</option>*@
+                        }
+
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-2">
+                    <button class="form-control btn-success" type="submit" formaction="ComplaintForm" formmethod="post">
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+</div>

@@ -23,6 +23,19 @@
           <Property Name="Caste" Type="nvarchar" MaxLength="10" />
           <Property Name="category" Type="nvarchar" MaxLength="10" />
         </EntityType>
+        <EntityType Name="tbl_distributions">
+          <Key>
+            <PropertyRef Name="distributionId" />
+          </Key>
+          <Property Name="distributionId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="employeeID" Type="int" />
+          <Property Name="itemcode" Type="bigint" />
+          <Property Name="Allocatedquantity" Type="int" />
+          <Property Name="Remainingquantity" Type="int" />
+          <Property Name="usedquantity" Type="int" />
+          <Property Name="createdby" Type="varchar" MaxLength="20" />
+          <Property Name="createdDate" Type="datetime" />
+        </EntityType>
         <EntityType Name="tbl_employee">
           <Key>
             <PropertyRef Name="EmployeeID" />
@@ -31,12 +44,16 @@
           <Property Name="EmployeeName" Type="nvarchar" MaxLength="30" />
           <Property Name="Role" Type="nvarchar" MaxLength="20" />
           <Property Name="ContactNo" Type="nvarchar" MaxLength="10" />
+          <Property Name="userid" Type="varchar" MaxLength="20" />
+          <Property Name="password" Type="varchar" MaxLength="20" />
+          <Property Name="createddate" Type="datetime" />
+          <Property Name="createdby" Type="varchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="tbl_InventoryStock">
           <Key>
             <PropertyRef Name="InventoryID" />
           </Key>
-          <Property Name="InventoryID" Type="bigint" Nullable="false" />
+          <Property Name="InventoryID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="VendorName" Type="nvarchar" MaxLength="30" />
           <Property Name="Item" Type="nvarchar" MaxLength="30" />
           <Property Name="quantity" Type="int" />
@@ -45,6 +62,25 @@
           <Property Name="Tax" Type="numeric" Precision="10" Scale="8" />
           <Property Name="BillNo" Type="nvarchar" MaxLength="30" />
           <Property Name="BillDate" Type="datetime" />
+          <Property Name="createdby" Type="varchar" MaxLength="20" />
+          <Property Name="createddate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tbl_Items">
+          <Key>
+            <PropertyRef Name="itemcode" />
+          </Key>
+          <Property Name="itemcode" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="itemname" Type="varchar" MaxLength="30" />
+          <Property Name="createdby" Type="varchar" MaxLength="20" />
+          <Property Name="createddate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tbl_itemstock">
+          <Key>
+            <PropertyRef Name="itemstockId" />
+          </Key>
+          <Property Name="itemstockId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Itemcode" Type="bigint" />
+          <Property Name="quantity" Type="int" />
         </EntityType>
         <EntityType Name="tbl_OandM">
           <Key>
@@ -56,9 +92,36 @@
           <Property Name="AssignedTo" Type="varchar" MaxLength="20" />
           <Property Name="AadharNo" Type="nvarchar" MaxLength="12" />
           <Property Name="ProblemreportedOn" Type="datetime" />
-          <Property Name="ProblemType" Type="nvarchar" MaxLength="50" />
-          <Property Name="Status" Type="nvarchar" MaxLength="10" />
+          <Property Name="ProblemType" Type="varchar" MaxLength="255" />
+          <Property Name="Status" Type="varchar" MaxLength="50" />
           <Property Name="DateOfCompletion" Type="datetime" />
+          <Property Name="Created_By" Type="varchar" MaxLength="10" />
+          <Property Name="ActualProblem" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'ph15954688577_CG.dbo.tbl_roles' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="tbl_roles">
+          <Key>
+            <PropertyRef Name="roleid" />
+            <PropertyRef Name="role" />
+          </Key>
+          <Property Name="roleid" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="role" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="createdby" Type="varchar" MaxLength="20" />
+          <Property Name="createddate" Type="datetime" />
+          <Property Name="modifiedby" Type="varchar" MaxLength="20" />
+          <Property Name="modifieddate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tbl_StockRequest">
+          <Key>
+            <PropertyRef Name="Request_ID" />
+          </Key>
+          <Property Name="Request_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmployeeID" Type="int" />
+          <Property Name="EmployeeName" Type="varchar" MaxLength="200" />
+          <Property Name="ItemCode" Type="int" />
+          <Property Name="ItemName" Type="varchar" MaxLength="100" />
+          <Property Name="Status" Type="varchar" MaxLength="50" />
         </EntityType>
         <Association Name="FK_BeneficiaryID">
           <End Role="tbl_beneficiary" Type="Self.tbl_beneficiary" Multiplicity="1" />
@@ -79,12 +142,41 @@
           <Parameter Name="aadhar" Type="varchar" Mode="In" />
           <Parameter Name="reportedon" Type="datetime" Mode="In" />
           <Parameter Name="problemtype" Type="varchar" Mode="In" />
+          <Parameter Name="createdBy" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="usp_generateUserID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="username" Type="varchar" Mode="In" />
+          <Parameter Name="contactno" Type="varchar" Mode="In" />
+          <Parameter Name="role" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="usp_RegisterUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EmployeeName" Type="varchar" Mode="In" />
+          <Parameter Name="userid" Type="varchar" Mode="In" />
+          <Parameter Name="role" Type="varchar" Mode="In" />
+          <Parameter Name="contactno" Type="varchar" Mode="In" />
+          <Parameter Name="password" Type="varchar" Mode="In" />
+          <Parameter Name="createddate" Type="datetime" Mode="In" />
+          <Parameter Name="createdby" Type="varchar" Mode="In" />
         </Function>
         <EntityContainer Name="GuptaAgroModelStoreContainer">
           <EntitySet Name="tbl_beneficiary" EntityType="Self.tbl_beneficiary" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_distributions" EntityType="Self.tbl_distributions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_employee" EntityType="Self.tbl_employee" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_InventoryStock" EntityType="Self.tbl_InventoryStock" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Items" EntityType="Self.tbl_Items" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_itemstock" EntityType="Self.tbl_itemstock" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_OandM" EntityType="Self.tbl_OandM" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_StockRequest" EntityType="Self.tbl_StockRequest" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_roles" EntityType="Self.tbl_roles" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [tbl_roles].[roleid] AS [roleid], 
+    [tbl_roles].[role] AS [role], 
+    [tbl_roles].[createdby] AS [createdby], 
+    [tbl_roles].[createddate] AS [createddate], 
+    [tbl_roles].[modifiedby] AS [modifiedby], 
+    [tbl_roles].[modifieddate] AS [modifieddate]
+    FROM [dbo].[tbl_roles] AS [tbl_roles]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_BeneficiaryID" Association="Self.FK_BeneficiaryID">
             <End Role="tbl_beneficiary" EntitySet="tbl_beneficiary" />
             <End Role="tbl_OandM" EntitySet="tbl_OandM" />
@@ -111,7 +203,20 @@
           <Property Name="Aadhar" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="Caste" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="category" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="tbl_OandM" Relationship="GuptaAgroModel.FK_BeneficiaryID" FromRole="tbl_beneficiary" ToRole="tbl_OandM" />
+          <NavigationProperty Name="tbl_OandM" Relationship="Self.FK_BeneficiaryID" FromRole="tbl_beneficiary" ToRole="tbl_OandM" />
+        </EntityType>
+        <EntityType Name="tbl_distributions">
+          <Key>
+            <PropertyRef Name="distributionId" />
+          </Key>
+          <Property Name="distributionId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="employeeID" Type="Int32" />
+          <Property Name="itemcode" Type="Int64" />
+          <Property Name="Allocatedquantity" Type="Int32" />
+          <Property Name="Remainingquantity" Type="Int32" />
+          <Property Name="usedquantity" Type="Int32" />
+          <Property Name="createdby" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="createdDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="tbl_employee">
           <Key>
@@ -121,12 +226,16 @@
           <Property Name="EmployeeName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="Role" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ContactNo" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="userid" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="createddate" Type="DateTime" Precision="3" />
+          <Property Name="createdby" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="tbl_InventoryStock">
           <Key>
             <PropertyRef Name="InventoryID" />
           </Key>
-          <Property Name="InventoryID" Type="Int64" Nullable="false" />
+          <Property Name="InventoryID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="VendorName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="Item" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="quantity" Type="Int32" />
@@ -135,6 +244,25 @@
           <Property Name="Tax" Type="Decimal" Precision="10" Scale="8" />
           <Property Name="BillNo" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="BillDate" Type="DateTime" Precision="3" />
+          <Property Name="createdby" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="createddate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbl_Items">
+          <Key>
+            <PropertyRef Name="itemcode" />
+          </Key>
+          <Property Name="itemcode" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="itemname" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="createdby" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="createddate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbl_itemstock">
+          <Key>
+            <PropertyRef Name="itemstockId" />
+          </Key>
+          <Property Name="itemstockId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Itemcode" Type="Int64" />
+          <Property Name="quantity" Type="Int32" />
         </EntityType>
         <EntityType Name="tbl_OandM">
           <Key>
@@ -146,32 +274,28 @@
           <Property Name="AssignedTo" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="AadharNo" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
           <Property Name="ProblemreportedOn" Type="DateTime" Precision="3" />
-          <Property Name="ProblemType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ProblemType" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="DateOfCompletion" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="tbl_beneficiary" Relationship="GuptaAgroModel.FK_BeneficiaryID" FromRole="tbl_OandM" ToRole="tbl_beneficiary" />
+          <Property Name="Created_By" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_beneficiary" Relationship="Self.FK_BeneficiaryID" FromRole="tbl_OandM" ToRole="tbl_beneficiary" />
+          <Property Name="ActualProblem" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityContainer Name="GuptaAgroDBContext" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="tbl_beneficiary" EntityType="Self.tbl_beneficiary" />
-          <EntitySet Name="tbl_employee" EntityType="Self.tbl_employee" />
-          <EntitySet Name="tbl_InventoryStock" EntityType="Self.tbl_InventoryStock" />
-          <EntitySet Name="tbl_OandM" EntityType="Self.tbl_OandM" />
-          <FunctionImport Name="usp_complaint" ReturnType="Collection(Int32)">
-            <Parameter Name="workorder" Mode="In" Type="String" />
-            <Parameter Name="beneficiaryId" Mode="In" Type="Int32" />
-            <Parameter Name="assignedTo" Mode="In" Type="String" />
-            <Parameter Name="aadhar" Mode="In" Type="String" />
-            <Parameter Name="reportedon" Mode="In" Type="DateTime" />
-            <Parameter Name="problemtype" Mode="In" Type="String" />
-          </FunctionImport>
-          <AssociationSet Name="FK_BeneficiaryID" Association="GuptaAgroModel.FK_BeneficiaryID">
-            <End Role="tbl_beneficiary" EntitySet="tbl_beneficiary" />
-            <End Role="tbl_OandM" EntitySet="tbl_OandM" />
-          </AssociationSet>
-        </EntityContainer>
+        <EntityType Name="tbl_roles">
+          <Key>
+            <PropertyRef Name="roleid" />
+            <PropertyRef Name="role" />
+          </Key>
+          <Property Name="roleid" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="role" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="createdby" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="createddate" Type="DateTime" Precision="3" />
+          <Property Name="modifiedby" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="modifieddate" Type="DateTime" Precision="3" />
+        </EntityType>
         <Association Name="FK_BeneficiaryID">
-          <End Type="GuptaAgroModel.tbl_beneficiary" Role="tbl_beneficiary" Multiplicity="1" />
-          <End Type="GuptaAgroModel.tbl_OandM" Role="tbl_OandM" Multiplicity="*" />
+          <End Role="tbl_beneficiary" Type="Self.tbl_beneficiary" Multiplicity="1" />
+          <End Role="tbl_OandM" Type="Self.tbl_OandM" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="tbl_beneficiary">
               <PropertyRef Name="BeneficiaryID" />
@@ -181,12 +305,61 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityContainer Name="GuptaAgroDbContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tbl_beneficiary" EntityType="Self.tbl_beneficiary" />
+          <EntitySet Name="tbl_distributions" EntityType="Self.tbl_distributions" />
+          <EntitySet Name="tbl_employee" EntityType="Self.tbl_employee" />
+          <EntitySet Name="tbl_InventoryStock" EntityType="Self.tbl_InventoryStock" />
+          <EntitySet Name="tbl_Items" EntityType="Self.tbl_Items" />
+          <EntitySet Name="tbl_itemstock" EntityType="Self.tbl_itemstock" />
+          <EntitySet Name="tbl_OandM" EntityType="Self.tbl_OandM" />
+          <EntitySet Name="tbl_roles" EntityType="Self.tbl_roles" />
+          <AssociationSet Name="FK_BeneficiaryID" Association="Self.FK_BeneficiaryID">
+            <End Role="tbl_beneficiary" EntitySet="tbl_beneficiary" />
+            <End Role="tbl_OandM" EntitySet="tbl_OandM" />
+          </AssociationSet>
+          <FunctionImport Name="usp_complaint" ReturnType="Collection(Int32)">
+            <Parameter Name="workorder" Mode="In" Type="String" />
+            <Parameter Name="beneficiaryId" Mode="In" Type="Int32" />
+            <Parameter Name="assignedTo" Mode="In" Type="String" />
+            <Parameter Name="aadhar" Mode="In" Type="String" />
+            <Parameter Name="reportedon" Mode="In" Type="DateTime" />
+            <Parameter Name="problemtype" Mode="In" Type="String" />
+            <Parameter Name="createdBy" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="usp_generateUserID" ReturnType="Collection(String)">
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="contactno" Mode="In" Type="String" />
+            <Parameter Name="role" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="usp_RegisterUser" ReturnType="Collection(Int32)">
+            <Parameter Name="EmployeeName" Mode="In" Type="String" />
+            <Parameter Name="userid" Mode="In" Type="String" />
+            <Parameter Name="role" Mode="In" Type="String" />
+            <Parameter Name="contactno" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+            <Parameter Name="createddate" Mode="In" Type="DateTime" />
+            <Parameter Name="createdby" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="tbl_StockRequest" EntityType="GuptaAgroModel.tbl_StockRequest" />
+        </EntityContainer>
+        <EntityType Name="tbl_StockRequest">
+          <Key>
+            <PropertyRef Name="Request_ID" />
+          </Key>
+          <Property Name="Request_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeID" Type="Int32" />
+          <Property Name="EmployeeName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ItemCode" Type="Int32" />
+          <Property Name="ItemName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="GuptaAgroModelStoreContainer" CdmEntityContainer="GuptaAgroDBContext">
+        <EntityContainerMapping StorageEntityContainer="GuptaAgroModelStoreContainer" CdmEntityContainer="GuptaAgroDbContext">
           <EntitySetMapping Name="tbl_beneficiary">
             <EntityTypeMapping TypeName="GuptaAgroModel.tbl_beneficiary">
               <MappingFragment StoreEntitySet="tbl_beneficiary">
@@ -206,6 +379,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="tbl_distributions">
+            <EntityTypeMapping TypeName="GuptaAgroModel.tbl_distributions">
+              <MappingFragment StoreEntitySet="tbl_distributions">
+                <ScalarProperty Name="distributionId" ColumnName="distributionId" />
+                <ScalarProperty Name="employeeID" ColumnName="employeeID" />
+                <ScalarProperty Name="itemcode" ColumnName="itemcode" />
+                <ScalarProperty Name="Allocatedquantity" ColumnName="Allocatedquantity" />
+                <ScalarProperty Name="Remainingquantity" ColumnName="Remainingquantity" />
+                <ScalarProperty Name="usedquantity" ColumnName="usedquantity" />
+                <ScalarProperty Name="createdby" ColumnName="createdby" />
+                <ScalarProperty Name="createdDate" ColumnName="createdDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="tbl_employee">
             <EntityTypeMapping TypeName="GuptaAgroModel.tbl_employee">
               <MappingFragment StoreEntitySet="tbl_employee">
@@ -213,6 +400,10 @@
                 <ScalarProperty Name="EmployeeName" ColumnName="EmployeeName" />
                 <ScalarProperty Name="Role" ColumnName="Role" />
                 <ScalarProperty Name="ContactNo" ColumnName="ContactNo" />
+                <ScalarProperty Name="userid" ColumnName="userid" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="createddate" ColumnName="createddate" />
+                <ScalarProperty Name="createdby" ColumnName="createdby" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -228,12 +419,34 @@
                 <ScalarProperty Name="Tax" ColumnName="Tax" />
                 <ScalarProperty Name="BillNo" ColumnName="BillNo" />
                 <ScalarProperty Name="BillDate" ColumnName="BillDate" />
+                <ScalarProperty Name="createdby" ColumnName="createdby" />
+                <ScalarProperty Name="createddate" ColumnName="createddate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Items">
+            <EntityTypeMapping TypeName="GuptaAgroModel.tbl_Items">
+              <MappingFragment StoreEntitySet="tbl_Items">
+                <ScalarProperty Name="itemcode" ColumnName="itemcode" />
+                <ScalarProperty Name="itemname" ColumnName="itemname" />
+                <ScalarProperty Name="createdby" ColumnName="createdby" />
+                <ScalarProperty Name="createddate" ColumnName="createddate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_itemstock">
+            <EntityTypeMapping TypeName="GuptaAgroModel.tbl_itemstock">
+              <MappingFragment StoreEntitySet="tbl_itemstock">
+                <ScalarProperty Name="itemstockId" ColumnName="itemstockId" />
+                <ScalarProperty Name="Itemcode" ColumnName="Itemcode" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_OandM">
             <EntityTypeMapping TypeName="GuptaAgroModel.tbl_OandM">
               <MappingFragment StoreEntitySet="tbl_OandM">
+                <ScalarProperty Name="ActualProblem" ColumnName="ActualProblem" />
                 <ScalarProperty Name="OandMID" ColumnName="OandMID" />
                 <ScalarProperty Name="WorkOrderID" ColumnName="WorkOrderID" />
                 <ScalarProperty Name="BeneficiaryID" ColumnName="BeneficiaryID" />
@@ -243,10 +456,37 @@
                 <ScalarProperty Name="ProblemType" ColumnName="ProblemType" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="DateOfCompletion" ColumnName="DateOfCompletion" />
+                <ScalarProperty Name="Created_By" ColumnName="Created_By" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_roles">
+            <EntityTypeMapping TypeName="GuptaAgroModel.tbl_roles">
+              <MappingFragment StoreEntitySet="tbl_roles">
+                <ScalarProperty Name="roleid" ColumnName="roleid" />
+                <ScalarProperty Name="role" ColumnName="role" />
+                <ScalarProperty Name="createdby" ColumnName="createdby" />
+                <ScalarProperty Name="createddate" ColumnName="createddate" />
+                <ScalarProperty Name="modifiedby" ColumnName="modifiedby" />
+                <ScalarProperty Name="modifieddate" ColumnName="modifieddate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="usp_complaint" FunctionName="GuptaAgroModel.Store.usp_complaint" />
+          <FunctionImportMapping FunctionImportName="usp_generateUserID" FunctionName="GuptaAgroModel.Store.usp_generateUserID" />
+          <FunctionImportMapping FunctionImportName="usp_RegisterUser" FunctionName="GuptaAgroModel.Store.usp_RegisterUser" />
+          <EntitySetMapping Name="tbl_StockRequest">
+            <EntityTypeMapping TypeName="GuptaAgroModel.tbl_StockRequest">
+              <MappingFragment StoreEntitySet="tbl_StockRequest">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+                <ScalarProperty Name="ItemCode" ColumnName="ItemCode" />
+                <ScalarProperty Name="EmployeeName" ColumnName="EmployeeName" />
+                <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
+                <ScalarProperty Name="Request_ID" ColumnName="Request_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

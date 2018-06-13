@@ -1,0 +1,245 @@
+﻿@model List<CGSolar.Models.InventoryStock>
+@{
+    ViewBag.Title = "Inventory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css" />
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.js"></script>
+
+<style>
+    #inventoryTable thead {
+        color: black;
+        border-collapse: collapse;
+        border: 1px solid black;
+    }
+
+    #inventoryTable tbody td {
+        border-collapse: collapse;
+        border: 1px solid black;
+    }
+
+    tbody td:hover {
+        background-color: coral;
+    }
+
+    .modal-dialog {
+        position: static !important;
+    }
+    /*.dataTables_scrollBody{
+        max-height:15px;
+        overflow-y:scroll;
+    }*/
+</style>
+
+
+<h2>Inventory</h2>
+
+
+<div style="margin-top:80px"></div>
+<div class="modal-content">
+    <div class="modal-header" style="background-color:darkcyan">
+        <h4 class="modal-title">Iventoryn</h4>
+    </div>
+    <div class="modal-body">
+        <div class="panel-body">
+            <div class="table table-responsive">
+                @{int count = 0; }
+                <table id="inventoryTable" style="border: 1px solid black">
+                    <thead style="background-color: burlywood;">
+                        <tr>
+                            <td><b>S.No</b></td>
+                            <td><b>Vendor Name</b></td>
+                            <td><b>Spare Item</b></td>
+                            <td><b>Spare Quantity</b></td>
+                            <td><b>Bill No</b></td>
+                            <td><b>Billed Date</b></td>
+                            <td><b>Unit Cost</b></td>
+                            <td><b>Amount</b></td>
+                            @*<td><b>Aadhar No.</b></td>*@
+                            <td><b>Tax (CST/CGST)</b></td>
+                            @*<td><b>Total Amount</b></td>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var stock in Model)
+            {
+                count++;
+                            <tr>
+                                <td>@count</td>
+                                <td>@stock.VendorName</td>
+                                <td>@stock.SpareItem</td>
+                                <td>@stock.SpareQuantity</td>
+                                <td>@stock.BillNo</td>
+                                <td>@stock.BilledDate</td>
+                                <td>@stock.UnitCost</td>
+                                <td>@stock.Amount</td>
+                                <td>@stock.Tax</td>
+                                @*<td>@stock.TotalAmount</td>*@
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            </div>
+        </div>
+    </div>
+<div class="modal-footer">
+    <button type="button" data-target="#myModal" data-toggle="modal" class="btn btn-success" >Add Items <span class="bt"><b>+</b></span></button>
+</div>            
+
+            <div id="myModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color:darkcyan">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Enter Stock Details</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="panel-body">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3">Vendor Name: </label>
+                                        <div class="col-sm-8">
+                                            <input id="vendorName" name="vendorName" class="form-control" type="text" placeholder="Please Enter Vendor name" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3">Item Name: </label>
+                                        <div class="col-sm-8">
+                                            <select id="spareItem" name="spareItem" class="form-control" onchange="showTextBox()">
+                                                <option value="-1">--Please Select Item--</option>
+                                                @foreach (var item in (ViewBag.ItemList as List<tbl_Items>))
+                                        {
+                                        <option value="@item.itemcode">@item.itemname</option>
+                                        }
+                                                <option value="0">Others</option>
+                                            </select>
+                                            <input id="spareItemText" name="spareItemText" class="form-control" type="text" style="display:none" placeholder="Please Enter Item name" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3">Quantity: </label>
+                                        <div class="col-sm-8">
+                                            <input id="quantity" class="form-control" type="text" placeholder="Please Enter Quantity" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3">Bill No: </label>
+                                        <div class="col-sm-8">
+                                            <input id="billNo" name="billNo" class="form-control" type="text" placeholder="Please Enter Bill Number" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3">Billed Date: </label>
+                                        <div class="col-sm-8">
+                                            <input id="billDate" name="billDate" class="form-control" type="date" placeholder="Please Enter Billed Date" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3">Unit Cost: </label>
+                                        <div class="col-sm-8">
+                                            <input id="unitCost" name="unitCost" class="form-control" type="text" placeholder="Please Enter Price of item" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3">Amount: </label>
+                                        <div class="col-sm-8">
+                                            <input id="amount" name="amount" class="form-control" type="text" placeholder="Please Enter Amount" />
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3">Tax(CST/CGST): </label>
+                                        <div class="col-sm-8">
+                                            <input id="tax" name="tax" class="form-control" type="text" placeholder="Please Enter Tax Amount" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-sm-5"></div>
+                                        <div class="col-sm-2">
+                                            <button class="form-control btn-success" type="button" onclick="addInventory()">
+                                                Add
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <script>
+                function addInventory() {
+
+                    //$('#reportDate_'+i).datepicker();
+                    //$('#completionDate_'+i).datepicker();
+
+                    var vendorName = $('#vendorName').val();
+                    var itemName = $('#spareItem').val();
+                    var quantity = $('#quantity').val();
+                    var billNo = $('#billNo').val();
+                    var billDate = $('#billDate').val();
+                    var unitCost = $('#unitCost').val();
+                    var amount = $('#amount').val();
+                    var tax = $('#tax').val();
+                    var spareItemText = $('#spareItemText').val();
+
+                    $.ajax({
+                        url: "@Url.Action("AddStock","Home")",
+                        dataType: "json",
+                        type: "POST",
+                        data: {
+                            vendorName: vendorName, itemName: itemName, quantity: quantity, billNo: billNo, billDate: billDate, price: unitCost, amount: amount, tax: tax, spareItemText: spareItemText
+                        },
+                        success: function (data) {
+                            debugger;
+                            if (data == "Itemstock") {
+                                alert('Item added and Stock updated successfully');
+                                location.reload(true);
+                            }
+                            else if(data == "stock"){
+                                alert('Stock Added successfully!!');
+                                location.reload(true);
+                            }
+                            else if(data == "Item exists"){
+                                alert('Item already exists');
+                            }
+                            
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                }
+
+                function showTextBox() {
+                    if ($('#spareItem').val() == "0") {
+                        $('#spareItemText').show();
+                        $('#spareItemText').attr('required', true);
+                    }
+                    else {
+                        $('#spareItemText').hide();
+                        $('#spareItemText').attr('required', false);
+                    }
+                }
+                $('#inventoryTable').DataTable({
+                    "scrollY": "200px",
+                    "order": [],
+                    //"scrollX": true
+                });
+            </script>

@@ -152,7 +152,7 @@
         },
         minLength: 3,
         select: function (event, ui) {
-            debugger;
+            debugger;           
             console.log(ui.item.value)
             $.ajax({
                 url: "@Url.Action("AutoFill","Home")",
@@ -169,6 +169,9 @@
                     $('#beneficiaryID').val(ui.item.value);
                     $('#systemCapacity').val(data.systemCapacity);
                     $('#pumpType').val(data.pumpType);
+                    if ($('#contactNumber').val() == null || $('#contactNumber').val() == "") {
+                        $('#contactNumber').attr('readonly', true);
+                    }
                 }
         });
             

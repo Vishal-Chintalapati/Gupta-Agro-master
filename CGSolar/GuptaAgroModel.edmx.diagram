@@ -4,12 +4,17 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="08bb095e993d4471909442305f3cde0f" Name="Diagram1">
-        <EntityTypeShape EntityType="GuptaAgroModel.tbl_beneficiary" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="GuptaAgroModel.tbl_employee" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="GuptaAgroModel.tbl_InventoryStock" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="GuptaAgroModel.tbl_OandM" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
-        <AssociationConnector Association="GuptaAgroModel.FK_BeneficiaryID" />
+      <Diagram DiagramId="0df5230ca832462190ae268bd150d050" Name="Diagram1">
+        <EntityTypeShape EntityType="GuptaAgroModel.tbl_beneficiary" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="GuptaAgroModel.tbl_distributions" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="GuptaAgroModel.tbl_employee" Width="1.5" PointX="0.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="GuptaAgroModel.tbl_InventoryStock" Width="1.5" PointX="2.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="GuptaAgroModel.tbl_Items" Width="1.5" PointX="5.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="GuptaAgroModel.tbl_itemstock" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="GuptaAgroModel.tbl_OandM" Width="1.5" PointX="3" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="GuptaAgroModel.tbl_roles" Width="1.5" PointX="7.75" PointY="3.75" IsExpanded="true" />
+        <AssociationConnector Association="GuptaAgroModel.FK_BeneficiaryID" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="GuptaAgroModel.tbl_StockRequest" Width="1.5" PointX="5.375" PointY="7.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

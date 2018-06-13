@@ -1,0 +1,95 @@
+﻿@model List<CGSolar.Models.OperationAndMaintenanceModel>
+@{
+    ViewBag.Title = "InventoryAdminONM";
+}
+
+<h2>InventoryAdminONM</h2>
+
+@using (Html.BeginForm("InventoryAdminONM", "Home", FormMethod.Post, new { @role = "form" }))
+{
+
+
+    <div class="modal-content">
+        <div class="modal-header">            
+            <h4 class="modal-title">O and M List</h4>
+        </div>
+        <div class="modal-body">
+            <div class="panel-body">
+                <div class="table table-responsive" style="margin-top:20px">
+                    <table id="OMtable" style="border: 1px solid black">
+                        <thead style="background-color:burlywood">
+                            <tr>
+                                <td>S.No.</td>
+                                <td>Wo#</td>
+                                <td>Beneficiary Name</td>
+                                <td>Village</td>
+                                <td>Block</td>
+                                <td>District</td>
+                                <td>System Capacity</td>
+                                <td>Contact Number</td>
+                                <td>Assigned To</td>
+                                <td>Problem Report Date</td>
+                                <td>Problem Type</td>
+                                <td>Status</td>
+                                <td>Date Of Completion</td>
+                                @if (Session["role"].ToString() == "Admin" || Session["role"].ToString() == "Field Assitant")
+                {
+                                    <td></td>
+                                }
+
+                            </tr>
+                        </thead>
+                        <tbody>                            
+                            @{int count = 1;
+                                if (Model.Count > 0)
+                                {
+                                    for (int i = 0; i < Model.Count; i++)
+                                    {
+                                        <tr>
+                                            <td>@count</td>
+                                            <td>@Model[i].WorkOrderNo</td>
+                                            <td>@Model[i].BeneficiaryName</td>
+                                            <td>@Model[i].Village</td>
+                                            <td>@Model[i].Block</td>
+                                            <td>@Model[i].District</td>
+                                            <td>@Model[i].SystemCapacity</td>
+                                            <td>@Model[i].Contact</td>
+                                            <td>@Model[i].AssignedEmployee</td>
+                                            <td>@Model[i].ReportedDate</td>
+                                            <td>@Model[i].ProblemDescription</td>
+                                            <td>@Html.DropDownListFor(model => model[i].Status, new SelectList(ViewBag.Status, Model[i].Status), "--Please Select Status--", new { @class = "form-control" })</td>
+                                            <td>@Model[i].CompletionDate</td>
+                                            <td hidden>@Html.HiddenFor(model => model[i].WorkOrderNo)</td>
+
+                                        </tr>
+                                        count++;
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>No data Available</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                }
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+                                }
